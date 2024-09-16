@@ -1,12 +1,8 @@
 #include <WifiEspNow.h>
-#if defined(ARDUINO_ARCH_ESP8266)
-#include <ESP8266WiFi.h>
-#elif defined(ARDUINO_ARCH_ESP32)
 #include <WiFi.h>
-#endif
 
 // The recipient MAC address. It must be modified for each device.
-static uint8_t PEER[]{0xFC, 0xE8, 0xC0, 0x7B, 0x51, 0x79};
+static uint8_t PEER[]{0xFC, 0xE8, 0xC0, 0x7C, 0x4C, 0xB1};
 
 const int led_pin_1_red = 23;
 const int led_pin_1_blue = 22;
