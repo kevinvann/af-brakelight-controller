@@ -12,9 +12,22 @@ typedef struct struct_message {
 struct_message data;
 
 const int led_pin_1_red = 23;
-const int led_pin_1_blue = 22;
+const int led_pin_2_red = 22;
+const int led_pin_3_red = 1;
+const int led_pin_4_red = 3;
+const int led_pin_5_red = 21;
+const int led_pin_6_red = 19;
+
+const int led_pin_1_blue = 32;
+const int led_pin_2_blue = 33;
+const int led_pin_3_blue = 27;
+const int led_pin_4_blue = 14;
+const int led_pin_5_blue = 12;
+const int led_pin_6_blue = 13;
 
 int last_received_message = 0;
+bool last_is_braking = false;
+int led_state = LOW;
 
 void receive_message(const uint8_t mac[WIFIESPNOW_ALEN], const uint8_t* buf, size_t count,
                      void* arg) {
@@ -32,7 +45,19 @@ void setup() {
   Serial.println();
 
   pinMode(led_pin_1_red, OUTPUT);
+  pinMode(led_pin_2_red, OUTPUT);
+  pinMode(led_pin_3_red, OUTPUT);
+  pinMode(led_pin_4_red, OUTPUT);
+  pinMode(led_pin_5_red, OUTPUT);
+  pinMode(led_pin_6_red, OUTPUT);
+
   pinMode(led_pin_1_blue, OUTPUT);
+  pinMode(led_pin_2_blue, OUTPUT);
+  pinMode(led_pin_3_blue, OUTPUT);
+  pinMode(led_pin_4_blue, OUTPUT);
+  pinMode(led_pin_5_blue, OUTPUT);
+  pinMode(led_pin_6_blue, OUTPUT);
+
 
   WiFi.persistent(false);
   WiFi.mode(WIFI_AP);
@@ -58,12 +83,25 @@ void setup() {
 void loop() {
   int time_since_last_message = millis() - last_received_message;
 
-  // if esp transmitter is off and not sending messages, default to regular lights
-  if (data.is_braking && time_since_last_message < 500) {
-    digitalWrite(led_pin_1_blue, LOW);
-    digitalWrite(led_pin_1_red, HIGH);
+  if (data.is_braking && time_since_last_message < 200) {
+    led_state = HIGH;
   } else {
-    digitalWrite(led_pin_1_blue, HIGH);
-    digitalWrite(led_pin_1_red, LOW);
+    led_state = LOW;
   }
+
+  digitalWrite(led_pin_3_red, led_state);
+  digitalWrite(led_pin_4_red, led_state);
+  digitalWrite(led_pin_3_blue, !led_state);
+  digitalWrite(led_pin_4_blue, !led_state);
+  delay(100);
+  digitalWrite(led_pin_2_red, led_state);
+  digitalWrite(led_pin_5_red, led_state);
+  digitalWrite(led_pin_2_blue, !led_state);
+  digitalWrite(led_pin_5_blue, !led_state);
+  delay(50);
+  digitalWrite(led_pin_1_red, led_state);
+  digitalWrite(led_pin_6_red, led_state);
+  digitalWrite(led_pin_1_blue, !led_state);
+  digitalWrite(led_pin_6_blue, !led_state);
+
 }
